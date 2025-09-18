@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CompreFácil - Microserviços de E-commerce</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            background: white; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .header p { font-size: 1.2em; opacity: 0.9; }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            padding: 40px;
+        }
+        
+        .service-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        .service-card:hover { transform: translateY(-5px); }
+        
+        .service-header {
+            padding: 20px;
+            color: white;
+            text-align: center;
+        }
+        .payment-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .notification-header { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        
+        .service-content {
+            padding: 25px;
+        }
+        
+        .service-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .quick-test {
+            display: grid;
+            gap: 10px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        button:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .notification-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #28a745;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(40, 167, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        .architecture {
+            background: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .arch-diagram {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .arch-component {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            min-width: 120px;
+        }
+        
+        .arrow { font-size: 1.5em; color: #667eea; }
+        
+        @media (max-width: 768px) {
+            .services-grid { grid-template-columns: 1fr; padding: 20px; }
+            .arch-diagram { flex-direction: column; }
+            .arrow { transform: rotate(90deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛒 CompreFácil</h1>
+            <p>Arquitetura de Microserviços para E-commerce</p>
+        </div>
+        
+        <div class="services-grid">
+            <!-- Payment Service -->
+            <div class="service-card">
+                <div class="service-header payment-header">
+                    <h2>💳 Payment Service</h2>
+                    <p>Porta 3001</p>
+                </div>
+                <div class="service-content">
+                    <div class="service-info">
+                        <p><span class="status-indicator"></span><strong>Status:</strong> Ativo</p>
+                        <p><strong>Função:</strong> Processamento de pagamentos</p>
+                        <p><strong>Tecnologia:</strong> Node.js + PostgreSQL</p>
+                    </div>
+                    
+                    <div class="quick-test">
+                        <button onclick="openService('http://localhost:3001')">🌐 Abrir Interface</button>
+                        <button onclick="testEndpoint('3001', '/health')">❤️ Health Check</button>
+                        <button onclick="testEndpoint('3001', '/api/payments/test')">🧪 Teste Rápido</button>
+                        <button onclick="testPayment()">💰 Simular Pagamento</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Notification Service -->
+            <div class="service-card">
+                <div class="service-header notification-header">
+                    <h2>📧 Notification Service</h2>
+                    <p>Porta 3002</p>
+                </div>
+                <div class="service-content">
+                    <div class="service-info">
+                        <p><span class="status-indicator"></span><strong>Status:</strong> Ativo</p>
+                        <p><strong>Função:</strong> Envio de notificações</p>
+                        <p><strong>Tecnologia:</strong> Node.js + RabbitMQ</p>
+                    </div>
+                    
+                    <div class="quick-test">
+                        <button class="notification-btn" onclick="openService('http://localhost:3002')">🌐 Abrir Interface</button>
+                        <button class="notification-btn" onclick="testEndpoint('3002', '/health')">❤️ Health Check</button>
+                        <button class="notification-btn" onclick="testEndpoint('3002', '/api/notifications/test')">🧪 Teste Rápido</button>
+                        <button class="notification-btn" onclick="testNotification()">📨 Enviar Notificação</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="architecture">
+            <h2>🏗️ Arquitetura do Sistema</h2>
+            <div class="arch-diagram">
+                <div class="arch-component">
+                    <strong>Frontend</strong><br>
+                    <small>React/Vue/Angular</small>
+                </div>
+                <span class="arrow">→</span>
+                <div class="arch-component">
+                    <strong>Payment Service</strong><br>
+                    <small>Node.js + PostgreSQL</small>
+                </div>
+                <span class="arrow">→</span>
+                <div class="arch-component">
+                    <strong>RabbitMQ</strong><br>
+                    <small>Message Broker</small>
+                </div>
+                <span class="arrow">→</span>
+                <div class="arch-component">
+                    <strong>Notification Service</strong><br>
+                    <small>Node.js + SMTP/SMS</small>
+                </div>
+            </div>
+            <p><strong>Fluxo:</strong> O usuário faz um pagamento → Payment Service processa → Envia mensagem via RabbitMQ → Notification Service envia confirmação</p>
+        </div>
+        
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        function openService(url) {
+            window.open(url, '_blank');
+        }
+
+        async function testEndpoint(port, path) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.textContent = `Testando http://localhost:${port}${path}...\n`;
+            resultDiv.scrollTop = resultDiv.scrollHeight;
+            
+            try {
+                const response = await fetch(`http://localhost:${port}${path}`);
+                const data = await response.json();
+                resultDiv.textContent += `✅ Resposta recebida:\n${JSON.stringify(data, null, 2)}\n\n`;
+            } catch (error) {
+                resultDiv.textContent += `❌ Erro: ${error.message}\n\n`;
+            }
+            resultDiv.scrollTop = resultDiv.scrollHeight;
+        }
+
+        async function testPayment() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.textContent = 'Simulando pagamento...\n';
+            
+            const paymentData = {
+                user_id: 1,
+                amount: parseFloat((Math.random() * 500 + 10).toFixed(2)),
+                payment_method: ['cartao_credito', 'cartao_debito', 'pix', 'boleto'][Math.floor(Math.random() * 4)],
+                description: 'Compra de teste via interface web'
+            };
+            
+            try {
+                resultDiv.textContent += `Dados do pagamento:\n${JSON.stringify(paymentData, null, 2)}\n\n`;
+                
+                const response = await fetch('http://localhost:3001/api/payments/process', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(paymentData)
+                });
+                
+                const data = await response.json();
+                resultDiv.textContent += `✅ Pagamento processado:\n${JSON.stringify(data, null, 2)}\n\n`;
+                
+                // Aguardar um pouco e verificar histórico
+                setTimeout(async () => {
+                    try {
+                        const historyResponse = await fetch('http://localhost:3001/api/payments/history');
+                        const historyData = await historyResponse.json();
+                        resultDiv.textContent += `📊 Histórico atualizado:\n${JSON.stringify(historyData, null, 2)}\n`;
+                        resultDiv.scrollTop = resultDiv.scrollHeight;
+                    } catch (err) {
+                        console.error('Erro ao buscar histórico:', err);
+                    }
+                }, 2000);
+                
+            } catch (error) {
+                resultDiv.textContent += `❌ Erro: ${error.message}\n\n`;
+            }
+            resultDiv.scrollTop = resultDiv.scrollHeight;
+        }
+
+        async function testNotification() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.textContent = 'Enviando notificação de teste...\n';
+            
+            const notificationData = {
+                type: ['email', 'sms', 'push'][Math.floor(Math.random() * 3)],
+                recipient: 'usuario@exemplo.com',
+                subject: 'Teste de Notificação CompreFácil',
+                message: `Notificação de teste enviada em ${new Date().toLocaleString()}`,
+                priority: 'normal'
+            };
+            
+            try {
+                resultDiv.textContent += `Dados da notificação:\n${JSON.stringify(notificationData, null, 2)}\n\n`;
+                
+                const response = await fetch('http://localhost:3002/api/notifications/send', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(notificationData)
+                });
+                
+                const data = await response.json();
+                resultDiv.textContent += `✅ Notificação enviada:\n${JSON.stringify(data, null, 2)}\n\n`;
+                
+                // Verificar histórico
+                setTimeout(async () => {
+                    try {
+                        const historyResponse = await fetch('http://localhost:3002/api/notifications/history');
+                        const historyData = await historyResponse.json();
+                        resultDiv.textContent += `📊 Histórico de notificações:\n${JSON.stringify(historyData, null, 2)}\n`;
+                        resultDiv.scrollTop = resultDiv.scrollHeight;
+                    } catch (err) {
+                        console.error('Erro ao buscar histórico:', err);
+                    }
+                }, 1000);
+                
+            } catch (error) {
+                resultDiv.textContent += `❌ Erro: ${error.message}\n\n`;
+            }
+            resultDiv.scrollTop = resultDiv.scrollHeight;
+        }
+
+        // Verificar status dos serviços ao carregar a página
+        window.addEventListener('load', () => {
+            console.log('🚀 Interface CompreFácil carregada!');
+            console.log('📡 Payment Service: http://localhost:3001');
+            console.log('📨 Notification Service: http://localhost:3002');
+            console.log('🐰 RabbitMQ Management: http://localhost:15672');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+# Arquivo de testes de API para VS Code REST Client
+
+### Health Checks
+
+# Payment Service Health Check
+GET http://localhost:3001/health
+
+###
+
+# Notification Service Health Check
+GET http://localhost:3002/health
+
+###
+
+### Payment Service API Tests
+
+# Criar novo pagamento
+POST http://localhost:3001/api/payments
+Content-Type: application/json
+
+{
+  "user_id": 1,
+  "amount": 99.99,
+  "payment_method": "cartao_credito",
+  "description": "Compra de produto XYZ - Teste API"
+}
+
+###
+
+# Criar pagamento PIX
+POST http://localhost:3001/api/payments
+Content-Type: application/json
+
+{
+  "user_id": 2,
+  "amount": 149.50,
+  "payment_method": "pix",
+  "description": "Compra de produto ABC via PIX"
+}
+
+###
+
+# Buscar pagamento por ID
+GET http://localhost:3001/api/payments/1
+
+###
+
+# Buscar pagamentos por usuário
+GET http://localhost:3001/api/payments/user/1
+
+###
+
+# Listar todos os pagamentos (paginado)
+GET http://localhost:3001/api/payments?page=1&limit=10
+
+###
+
+### Notification Service API Tests
+
+# Listar todas as notificações
+GET http://localhost:3002/api/notifications
+
+###
+
+# Buscar notificações por usuário
+GET http://localhost:3002/api/notifications/user/1
+
+###
+
+# Buscar notificações por transação
+GET http://localhost:3002/api/notifications/transaction/1
+
+###
+
+# Estatísticas de notificações
+GET http://localhost:3002/api/notifications/stats
+
+###
+
+### Testes de Validação
+
+# Teste de pagamento inválido - sem user_id
+POST http://localhost:3001/api/payments
+Content-Type: application/json
+
+{
+  "amount": 99.99,
+  "payment_method": "cartao_credito",
+  "description": "Teste sem user_id"
+}
+
+###
+
+# Teste de pagamento inválido - valor negativo
+POST http://localhost:3001/api/payments
+Content-Type: application/json
+
+{
+  "user_id": 1,
+  "amount": -50.00,
+  "payment_method": "cartao_credito",
+  "description": "Teste valor negativo"
+}
+
+###
+
+# Teste de pagamento inválido - método de pagamento inválido
+POST http://localhost:3001/api/payments
+Content-Type: application/json
+
+{
+  "user_id": 1,
+  "amount": 99.99,
+  "payment_method": "metodo_inexistente",
+  "description": "Teste método inválido"
+}
+
+###
+
+### Testes de Volume
+
+# Criar múltiplos pagamentos para teste
+POST http://localhost:3001/api/payments
+Content-Type: application/json
+
+{
+  "user_id": 3,
+  "amount": 25.00,
+  "payment_method": "cartao_debito",
+  "description": "Compra teste 1"
+}
+
+###
+
+POST http://localhost:3001/api/payments
+Content-Type: application/json
+
+{
+  "user_id": 3,
+  "amount": 75.00,
+  "payment_method": "boleto",
+  "description": "Compra teste 2"
+}
+
+###
+
+POST http://localhost:3001/api/payments
+Content-Type: application/json
+
+{
+  "user_id": 4,
+  "amount": 199.99,
+  "payment_method": "pix",
+  "description": "Compra teste 3"
+}
+
+###

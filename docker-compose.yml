@@ -1,0 +1,96 @@
+services:
+  # Banco de dados PostgreSQL
+    image: postgres:15-alpine
+    container_name: comprefacil_postgres
+    environment:
+      POSTGRES_DB: comprefacil_db
+      POSTGRES_USER: comprefacil_user
+      POSTGRES_PASSWORD: comprefacil_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - comprefacil_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U comprefacil_user -d comprefacil_db"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Sistema de mensageria RabbitMQ
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: comprefacil_rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: comprefacil_user
+      RABBITMQ_DEFAULT_PASS: comprefacil_password
+    ports:
+      - "5672:5672"    # AMQP port
+      - "15672:15672"  # Management UI
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - comprefacil_network
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
+
+  # Serviço de Pagamento
+  payment-service:
+    build:
+      context: ./payment-service
+      dockerfile: Dockerfile
+    container_name: comprefacil_payment
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: comprefacil_db
+      DB_USER: comprefacil_user
+      DB_PASSWORD: comprefacil_password
+      RABBITMQ_URL: amqp://comprefacil_user:comprefacil_password@rabbitmq:5672
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - comprefacil_network
+    restart: unless-stopped
+
+  # Serviço de Notificação
+  notification-service:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+    container_name: comprefacil_notification
+    environment:
+      NODE_ENV: production
+      PORT: 3002
+      RABBITMQ_URL: amqp://comprefacil_user:comprefacil_password@rabbitmq:5672
+    ports:
+      - "3002:3002"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - comprefacil_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  rabbitmq_data:
+    driver: local
+
+networks:
+  comprefacil_network:
+    driver: bridge
+    name: comprefacil_network
