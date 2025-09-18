@@ -1,5 +1,6 @@
 services:
   # Banco de dados PostgreSQL
+  postgres:
     image: postgres:15-alpine
     container_name: comprefacil_postgres
     environment:
